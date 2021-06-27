@@ -12,18 +12,21 @@ Plug 'airblade/vim-gitgutter'
 Plug 'dense-analysis/ale'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'tpope/vim-commentary'
 
 call plug#end()
+
 syntax on
 filetype plugin on
 colorscheme onehalfdark
 
+" === Settings ===
 " Set color for NERDTree folders
 hi Directory guifg=#DCDFE4 ctermfg=252
 set encoding=UTF-8
 set number
 set t_Co=256
-set guifont=Fira\ Code:h18
+set guifont=FiraCode\ Nerd\ Font:h18
 set guioptions= "Remove scrollbars is gui mode"
 set backspace=indent,eol,start "Fix backspace
 set nowrap
@@ -42,7 +45,16 @@ set ttimeout
 set ttimeoutlen=1
 set listchars=tab:>-,trail:~,extends:>,precedes:<,space:.
 set ttyfast
- 
+
+" === Let definitions ===
+"Fix colorcheme folors
+"Disable for macOS default terminal
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
 "NERDTree
 let NERDTreeMinimalUI=1
 
@@ -61,14 +73,23 @@ let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 let g:ale_linters_explicit = 1 
 let g:ale_linters = { 'ruby': ['rubocop'], 'haml': ['hamllint'], 'scss': ['scsslint'] }
 
+" === Autocommands ===
 "" transparent bg
 autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
 autocmd InsertEnter,InsertLeave * set cul! "Line cursor in insert mode"
 
-
 " Start NERDTree and put the cursor back in the other window.
 " autocmd VimEnter * NERDTree
 
+" Properly disable sound on errors on MacVim
+if has("gui_macvim")
+    autocmd GUIEnter * set vb t_vb=
+endif
+
+" === Shortcuts ===
+
+" nnoremap <C->< :tabprevious<CR>
+" nnoremap <C->> :tabnext<CR>
 
 " Switch windows
 nnoremap <C-H> <C-W>h
@@ -78,10 +99,11 @@ nnoremap <C-L> <C-W>l
 
 " NERD Tree Configuration 
 " Setup NERD Tree Shortcuts
-nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
 
-
 " Fuzzy Search - fzf
+nnoremap <C-p> :Files<CR>
+
+
